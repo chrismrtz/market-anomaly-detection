@@ -1,29 +1,25 @@
-# Market Anomaly Detection
+# Market Anomaly Detection Project
 
-## Project Overview
-This project aims to detect anomalies in financial markets in real-time or near real-time. By focusing on a specific asset class, the system will monitor for unusual activities that could indicate significant market events. The motivation for this project is to prevent incidents like the 2012 Knight Capital glitch, which led to substantial financial loss.
+## Overview
+This project aims to detect anomalies in financial market data in near real-time. It focuses on identifying unusual patterns that could signify market events, using historical stock data from APIs like AlphaVantage, Yahoo Finance, and IEX Cloud.
 
-## Data Sources
-The data for this project is sourced from the following financial APIs, including:
-- Yahoo Finance (using `yfinance` library)
+## Structure
+The project is structured as follows:
+- `src/`: Contains the source code for the anomaly detection.
+- `data/`: (TODO) Contains the data files used for analysis.
+- `notebooks/`: (TODO) Contains Jupyter notebooks for exploratory data analysis.
 
-## Features
-The system will monitor the following features for anomaly detection:
-- Moving Averages
-- Trading Volumes
-- Price Fluctuations
+## Setup
+To set up the project, follow these steps:
+1. Clone the repository: `git clone https://github.com/yourusername/market-anomaly-detection.git`
+2. Navigate to the project directory: `cd market-anomaly-detection`
+3. Install the required dependencies: `pip install -r requirements.txt`
 
-## Methodology
-A combination of machine learning algorithms and statistical methods will be used to detect anomalies. A sliding window approach will simulate real-time data analysis.
+## Usage
+To run the anomaly detection script, follow these steps:
+1. Navigate to the `src/` directory.
+2. Run the script: `python3 anom.py`
 
-## Metrics
-The performance of the anomaly detection system will be evaluated using:
-- Accuracy
-- Precision
-- F1 Score
-
-## Installation
-To set up the project environment, run the following command to install the required packages:
-```bash
-pip install -r requirements.txt
+## Progress
+The project has implemented data acquisition, preprocessing, and an initial anomaly detection model using Isolation Forest. The next steps include enhancing data visualization, model tuning, and evaluation.
 

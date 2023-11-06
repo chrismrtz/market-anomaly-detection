@@ -1,0 +1,6 @@
+numpy
+pandas
+matplotlib
+scikit-learn
+yfinance
+jupyter # If using Jupyter notebooks for analysis
