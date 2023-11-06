@@ -1,7 +1,7 @@
 # Market Anomaly Detection Project
 
 ## Overview
-This project aims to detect anomalies in financial market data in near real-time. It focuses on identifying unusual patterns that could signify market events, using historical stock data from APIs like AlphaVantage, Yahoo Finance, and IEX Cloud.
+This project aims to detect anomalies in financial market data in near real-time. It focuses on identifying unusual patterns that could signify market events, using historical stock data from APIs like AlphaVantage, Yahoo Finance, and/or IEX Cloud (currently just Yahoo).
 
 ## Structure
 The project is structured as follows:
