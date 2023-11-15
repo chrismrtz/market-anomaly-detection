@@ -3,6 +3,7 @@ import pandas as pd
 from sklearn.preprocessing import StandardScaler
 from sklearn.ensemble import IsolationForest
 from sklearn.metrics import classification_report, f1_score
+import matplotlib.pyplot as plt
 
 def clean_data(data):
     data.ffill(inplace=True)
@@ -30,6 +31,38 @@ def evaluate_model(true_labels, predicted_labels):
     print(f'F1 Score: {f1}')
     return f1
 
+def plot_data_with_anomalies(data, ticker):
+    plt.figure(figsize=(12, 6))
+    plt.plot(data.index, data['Close'], label='Close Price', color='blue')
+    anomalies = data[data['anomaly'] == -1]
+    plt.scatter(anomalies.index, anomalies['Close'], color='red', label='Anomaly')
+    plt.title(f'Stock Price and Anomalies for {ticker}')
+    plt.xlabel('Date')
+    plt.ylabel('Price')
+    plt.legend()
+    plt.show()
+
+def tune_model(data):
+    best_f1 = 0
+    best_model = None
+    features = data.drop(['anomaly'], axis=1, errors='ignore')  # Drop 'anomaly' column if it exists
+
+    for n_estimators in [50, 100, 200]:
+        for contamination in [0.01, 0.02, 0.05]:
+            model = IsolationForest(n_estimators=n_estimators, contamination=contamination)
+            model.fit(features)
+            predicted_labels = model.predict(features)
+            # Create a temporary 'anomaly' column for F1 score calculation
+            data['temp_anomaly'] = predicted_labels
+            f1 = f1_score(data['temp_anomaly'], predicted_labels, pos_label=-1)
+            if f1 > best_f1:
+                best_f1 = f1
+                best_model = model
+
+    # Clean up: remove the temporary column
+    data.drop(['temp_anomaly'], axis=1, inplace=True)
+    return best_model, best_f1
+
 def main():
     ticker_list = ['AAPL', 'GOOG', 'MSFT']
     start_date = '2020-01-01'
@@ -44,6 +77,10 @@ def main():
         if featured_data.isnull().values.any():
             print(f"NaN values found in featured data for {ticker}")
             featured_data.dropna(inplace=True)
+    
+        best_model, best_f1 = tune_model(featured_data)
+        print(f'Best model for {ticker} with F1 score: {best_f1}')
+
 
         anomalies = detect_anomalies(featured_data)
 
@@ -54,6 +91,8 @@ def main():
         # evaluate_model(true_labels, predicted_labels)
 
         print(f'Anomalies for {ticker}:\n{anomalies}\n')
+
+        plot_data_with_anomalies(featured_data, ticker)
 
 if __name__ == '__main__':
     main()
