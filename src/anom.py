@@ -5,25 +5,56 @@ from sklearn.ensemble import IsolationForest
 from sklearn.metrics import classification_report, f1_score
 import matplotlib.pyplot as plt
 
+from sklearn.impute import SimpleImputer
+
+def clean_data(data):
+    # Fill forward for missing values
+    data.ffill(inplace=True)
+    
+    # Impute any remaining missing values after fill forward
+    imputer = SimpleImputer(strategy='mean')  # or use another strategy
+    data_imputed = imputer.fit_transform(data)
+    data = pd.DataFrame(data_imputed, columns=data.columns, index=data.index)
+    
+    # Drop rows that still have NaN values (if any)
+    data.dropna(inplace=True)
+    return data
+
+'''
 def clean_data(data):
     data.ffill(inplace=True)
     data.dropna(inplace=True)
-    return data
+    return data'''
 
 def engineer_features(data):
     data['MA_5'] = data['Close'].rolling(window=5).mean()
     data['MA_10'] = data['Close'].rolling(window=10).mean()
     data['Pct_change'] = data['Close'].pct_change()
+    
+    # Fill NaN values created by rolling functions
+    data['MA_5'].fillna(value=data['Close'].mean(), inplace=True)
+    data['MA_10'].fillna(value=data['Close'].mean(), inplace=True)
+    data['Pct_change'].fillna(value=data['Pct_change'].mean(), inplace=True)
+
     scaler = StandardScaler()
     data['Volume_scaled'] = scaler.fit_transform(data[['Volume']])
+    
     return data
 
+
 def detect_anomalies(data):
+    # Check for NaN values and print columns with NaN
+    if data.isnull().any().any():
+        print("NaN values found in the following columns before model fitting:")
+        print(data.columns[data.isnull().any()])
+        raise ValueError("NaN values found in data before model fitting.")
+
     model = IsolationForest(n_estimators=100, contamination=0.01)
     model.fit(data)
     data['anomaly'] = model.predict(data)
     anomalies = data[data['anomaly'] == -1]
     return anomalies
+
 
 def evaluate_model(true_labels, predicted_labels):
     print(classification_report(true_labels, predicted_labels))
@@ -76,7 +107,7 @@ def main():
         # Check for NaN values after feature engineering
         if featured_data.isnull().values.any():
             print(f"NaN values found in featured data for {ticker}")
-            featured_data.dropna(inplace=True)
+            featured_data = clean_data(featured_data)
     
         best_model, best_f1 = tune_model(featured_data)
         print(f'Best model for {ticker} with F1 score: {best_f1}')
