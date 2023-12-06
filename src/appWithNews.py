@@ -1,3 +1,4 @@
+# Currently working on adding a news feature that provides a link to news about the marked anomaly
 import dash
 from dash import dcc, html
 from dash.dependencies import Input, Output
@@ -138,22 +139,18 @@ def update_graph_standard(selected_ticker, start_date, end_date):
     return fig
 
 def update_graph_for_calendar_analysis(selected_ticker, start_date, end_date, effect_type):
-    # Convert string dates to datetime objects
     start_date = pd.to_datetime(start_date)
     end_date = pd.to_datetime(end_date)
 
-    # Download stock data using yfinance
     df = yf.download(selected_ticker, start=start_date, end=end_date)
 
     # Determine the effect period based on the selected effect type
     effect_periods = {
         'january': (1, 1),  # January Effect
         'weekend': (6, 7)   # Weekend Effect (Saturday and Sunday)
-        # Add more effects as needed
     }
     effect_period = effect_periods.get(effect_type, (1, 1))
 
-    # Split data for calendar analysis
     train_data, test_data = split_data_for_calendar_analysis(df, start_date, end_date, effect_period)
 
     # Clean and process both datasets
