@@ -12,7 +12,7 @@ def clean_data(data):
     data.ffill(inplace=True)
     
     # Impute any remaining missing values after fill forward
-    imputer = SimpleImputer(strategy='mean')
+    imputer = SimpleImputer(strategy='mean')  # or use another strategy
     data_imputed = imputer.fit_transform(data)
     data = pd.DataFrame(data_imputed, columns=data.columns, index=data.index)
     
@@ -20,6 +20,11 @@ def clean_data(data):
     data.dropna(inplace=True)
     return data
 
+'''
+def clean_data(data):
+    data.ffill(inplace=True)
+    data.dropna(inplace=True)
+    return data'''
 
 def engineer_features(data):
     data['MA_5'] = data['Close'].rolling(window=5).mean()
@@ -37,7 +42,7 @@ def engineer_features(data):
     return data
 
 
-def detect_anomalies(data):
+def detect_anomalies(data, ticker):
     # Check for NaN values and print columns with NaN
     if data.isnull().any().any():
         print("NaN values found in the following columns before model fitting:")
@@ -48,6 +53,7 @@ def detect_anomalies(data):
     model.fit(data)
     data['anomaly'] = model.predict(data)
     anomalies = data[data['anomaly'] == -1]
+    anomalies['date'] = anomalies.index
     return anomalies
 
 
