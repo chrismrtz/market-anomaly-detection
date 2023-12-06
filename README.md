@@ -5,14 +5,13 @@ This project provides an innovative tool for detecting anomalies in the stock ma
 
 ## Structure
 - `src/`: Contains the core source code, including scripts for data processing and anomaly detection.
-- `dashboard/`: Houses the interactive web dashboard built with Dash for a dynamic user interface.
 - `anom.py`: The main script for data fetching, preprocessing, and anomaly detection using the Isolation Forest algorithm.
 - `app.py`: The Dash application script for running the interactive dashboard.
 
 ## Setup and Installation
-1. Clone the repository: `git clone https://github.com/yourusername/market-anomaly-detection.git`
+1. Clone the repository: `git clone https://github.com/chrismrtz/market-anomaly-detection.git`
 2. Navigate to the project folder: `cd market-anomaly-detection`
-3. Install dependencies: `pip install -r requirements.txt`
+3. Install dependencies: `pip3 install -r requirements.txt`
 
 ## Usage
 ### Anomaly Detection Script
